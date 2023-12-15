@@ -1,7 +1,14 @@
+from streamlit_lottie import st_lottie
+import json
 import streamlit as st
-import pandas as pd
-import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
+
+
+def load_lottieurl(url: str):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
+
 
 st.title('การทดสอบเขียนเว็บด้วย Python')
 st.header("Sumett Ampornsak")
@@ -9,10 +16,13 @@ st.subheader('สาขาเทคโนโลยีสารสนเทศ')
 st.markdown("----")
 
 col1, col2 = st.columns(2)
+#col1.write("This is column 1")
+#col2.write("This is column 2")
 with col1:
     st.image('./pic/sumett_pic.jpg')
 with col2:
     st.image('./pic/iris-flower-background.jpg')
+
 
 html_1 = """
 <div style="background-color:#85F733;padding:15px;border-radius:15px 15px 15px 15px;border-style:'solid';border-color:black">
@@ -22,8 +32,11 @@ html_1 = """
 st.markdown(html_1, unsafe_allow_html=True)
 st.markdown("")
 
-dt = pd.read_csv('./data/iris.csv')
+import pandas as pd
+
+dt=pd.read_csv('./data/iris.csv')
 st.write(dt.head(10))
+
 
 dt1 = dt['petal.length'].sum()
 dt2 = dt['petal.width'].sum()
@@ -33,11 +46,11 @@ dt4 = dt['sepal.width'].sum()
 dx = [dt1, dt2, dt3, dt4]
 dx2 = pd.DataFrame(dx, index=["d1", "d2", "d3", "d4"])
 
-show_chart_button = st.button("Show/Hide Bar Chart")
-chart_container = st.empty()
-
-if show_chart_button:
-    chart_container.bar_chart(dx2)
+if st.button("show bar chart"):
+    st.bar_chart(dx2)
+    st.button("Not show bar chart")
+else :
+    st.button("Not show bar chart") 
 
 html_2 = """
 <div style="background-color:#FFBF00;padding:15px;border-radius:15px 15px 15px 15px;border-style:'solid';border-color:black">
@@ -47,32 +60,42 @@ html_2 = """
 st.markdown(html_2, unsafe_allow_html=True)
 st.markdown("")
 
-ptlen = st.slider("กรุณาเลือกข้อมูล petal.length", 0, 10)
-ptwd = st.slider("กรุณาเลือกข้อมูล petal.width", 0, 10)
+
+ptlen = st.slider("กรุณาเลือกข้อมูล petal.length",0,10)
+ptwd = st.slider("กรุณาเลือกข้อมูล petal.width",0,10)
+
 splen = st.number_input("กรุณาเลือกข้อมูล sepal.length")
 spwd = st.number_input("กรุณาเลือกข้อมูล sepal.width")
 
-if st.button("ทำนายผล"):
-    if ptlen is not None and ptwd is not None and splen is not None and spwd is not None:
-        X = dt.drop('variety', axis=1)
-        y = dt.variety   
-        Knn_model = KNeighborsClassifier(n_neighbors=3)
-        Knn_model.fit(X, y)
-        
-        x_input = np.array([[ptlen, ptwd, splen, spwd]])
-        st.write(Knn_model.predict(x_input))
-        out = Knn_model.predict(x_input)
+from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
 
-        if out[0] == "Setosa":
-            st.image("./pic/Irissetosa1.jpg")
-            st.header("Setosa")
-        elif out[0] == "Versicolor":
-            st.image("./pic/irisVersicolor.jpg")
-            st.header("Versicolor")
-        else:
-            st.image("./pic/Irisvirginica.jpg")  
-            st.header("Verginiga")
-    else:
-        st.warning("กรุณากรอกข้อมูลที่เพียงพอสำหรับการทำนาย")
-else:
+if st.button("ทำนายผล"):
+   # ทำนาย
+   #dt = pd.read_csv("./data/iris.csv") 
+
+   X = dt.drop('variety', axis=1)
+   y = dt.variety   
+
+   Knn_model = KNeighborsClassifier(n_neighbors=3)
+   Knn_model.fit(X, y)
+
+    #ข้อมูล input สำหรับทดลองจำแนกข้อมูล
+   x_input = np.array([[ptlen, ptwd, splen, spwd]])
+    # เอา input ไปทดสอบ
+   st.write(Knn_model.predict(x_input))
+   out=Knn_model.predict(x_input)
+
+   if out[0]=="Setosa":
+      st.image("./pic/Irissetosa1.jpg")
+      st.header("Setosa")
+   elif out[0]=="Versicolor":
+      st.image("./pic/irisVersicolor.jpg")
+      st.header("Versicolor")
+   else:
+      st.image("./pic/Irisvirginica.jpg")  
+      st.header("Verginiga")
+   st.button("ไม่ทำนายผล")
+else :
     st.button("ไม่ทำนายผล")
+    
