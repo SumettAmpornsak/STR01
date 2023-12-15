@@ -77,13 +77,13 @@ if st.button("ทำนายผล"):
    out=Knn_model.predict(x_input)
 
    if out[0]=="Setosa":
-      #st.image("./pic/Irissetosa1.jpg")
+      st.image("./pic/Irissetosa1.jpg")
       st.header("Setosa")
    elif out[0]=="Versicolor":
-      #st.image("./pic/irisVersicolor.jpg")
+      st.image("./pic/irisVersicolor.jpg")
       st.header("Versicolor")
    else:
-      #st.image("./pic/Irisvirginica.jpg")  
+      st.image("./pic/Irisvirginica.jpg")  
       st.header("Verginiga")
    st.button("ไม่ทำนายผล")
 else :
