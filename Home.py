@@ -3,7 +3,7 @@ import streamlit as st
 st.title('การทดสอบเขียนเว็บด้วย Python')
 st.header("Sumett Ampornsak")
 st.subheader('สาขาเทคโนโลยีสารสนเทศ')
-
+st.markdown("----")
 
 col1, col2 = st.columns(2)
 #col1.write("This is column 1")
