@@ -1,21 +1,6 @@
-from streamlit_lottie import st_lottie
-import json
+
 import streamlit as st
-
-
-def load_lottieurl(url: str):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
-
-lot3="https://app.lottiefiles.com/share/773c58d7-5536-4d60-9d82-02751cd54567"
-lottie3 = load_lottieurl(lot3)
-st_lottie(lottie3)
 st.balloons()
-
-
-
 st.title('การทดสอบเขียนเว็บด้วย Python')
 st.header("Sumett Ampornsak")
 st.subheader('สาขาเทคโนโลยีสารสนเทศ')
