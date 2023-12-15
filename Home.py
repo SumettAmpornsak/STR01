@@ -24,7 +24,7 @@ with col2:
     st.image('./pic/iris-flower-background.jpg', use_container_width=True)
 
 # Statistics box on the left side
-st.sidebar.markdown(
+st.markdown(
     """
     <div style="background-color:#85F733;padding:15px;border-radius:15px;border-style:solid;border-color:black">
         <center><h5 style="color:white;">สถิติข้อมูลดอกไม้</h5></center>
@@ -32,18 +32,18 @@ st.sidebar.markdown(
     """, unsafe_allow_html=True
 )
 
-# Display first 10 rows of the dataset in the sidebar
+# Display first 10 rows of the dataset
 dt = pd.read_csv('./data/iris.csv')
-st.sidebar.dataframe(dt.head(10))
+st.dataframe(dt.head(10))
 
-# Summarize statistics in the sidebar
+# Summarize statistics
 dt_stats = dt.describe()
-st.sidebar.write(dt_stats)
+st.write(dt_stats)
 
-# Bar chart display with checkbox in the main section
-show_chart = st.sidebar.checkbox("Show bar chart")
+# Bar chart display with checkbox
+show_chart = st.checkbox("Show bar chart")
 if show_chart:
-    st.sidebar.bar_chart(dt_stats)
+    st.bar_chart(dt_stats)
 
 # Prediction box on the right side
 st.markdown(
@@ -55,13 +55,13 @@ st.markdown(
 )
 st.markdown("")
 
-# User input for prediction in the main section
+# User input for prediction on the right side
 ptlen = st.slider("กรุณาเลือกข้อมูล petal.length", 0, 10)
 ptwd = st.slider("กรุณาเลือกข้อมูล petal.width", 0, 10)
 splen = st.number_input("กรุณาเลือกข้อมูล sepal.length")
 spwd = st.number_input("กรุณาเลือกข้อมูล sepal.width")
 
-# KNN prediction button in the main section
+# KNN prediction button on the right side
 if st.button("ทำนายผล"):
     X = dt.drop('variety', axis=1)
     y = dt.variety
@@ -71,7 +71,7 @@ if st.button("ทำนายผล"):
     x_input = np.array([[ptlen, ptwd, splen, spwd]])
     predicted_class = Knn_model.predict(x_input)[0]
 
-    # Display predicted class and associated image in the main section
+    # Display predicted class and associated image on the right side
     st.subheader(f"ผลทำนาย: {predicted_class}")
     if predicted_class == "Setosa":
         st.image("./pic/Irissetosa1.jpg", use_container_width=True)
