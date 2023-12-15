@@ -23,30 +23,29 @@ with col1:
 with col2:
     st.image('./pic/iris-flower-background.jpg', use_container_width=True)
 
-# Stylish statistics box
-st.markdown(
+# Statistics box on the left side
+st.sidebar.markdown(
     """
     <div style="background-color:#85F733;padding:15px;border-radius:15px;border-style:solid;border-color:black">
         <center><h5 style="color:white;">สถิติข้อมูลดอกไม้</h5></center>
     </div>
     """, unsafe_allow_html=True
 )
-st.markdown("")
 
-# Display first 10 rows of the dataset
+# Display first 10 rows of the dataset in the sidebar
 dt = pd.read_csv('./data/iris.csv')
-st.dataframe(dt.head(10))
+st.sidebar.dataframe(dt.head(10))
 
-# Summarize statistics
+# Summarize statistics in the sidebar
 dt_stats = dt.describe()
-st.write(dt_stats)
+st.sidebar.write(dt_stats)
 
-# Bar chart display with checkbox
-show_chart = st.checkbox("Show bar chart")
+# Bar chart display with checkbox in the main section
+show_chart = st.sidebar.checkbox("Show bar chart")
 if show_chart:
-    st.bar_chart(dt_stats)
+    st.sidebar.bar_chart(dt_stats)
 
-# Stylish prediction box
+# Prediction box on the right side
 st.markdown(
     """
     <div style="background-color:#FFBF00;padding:15px;border-radius:15px;border-style:solid;border-color:black">
@@ -56,13 +55,13 @@ st.markdown(
 )
 st.markdown("")
 
-# User input for prediction
+# User input for prediction in the main section
 ptlen = st.slider("กรุณาเลือกข้อมูล petal.length", 0, 10)
 ptwd = st.slider("กรุณาเลือกข้อมูล petal.width", 0, 10)
 splen = st.number_input("กรุณาเลือกข้อมูล sepal.length")
 spwd = st.number_input("กรุณาเลือกข้อมูล sepal.width")
 
-# KNN prediction button
+# KNN prediction button in the main section
 if st.button("ทำนายผล"):
     X = dt.drop('variety', axis=1)
     y = dt.variety
@@ -72,7 +71,7 @@ if st.button("ทำนายผล"):
     x_input = np.array([[ptlen, ptwd, splen, spwd]])
     predicted_class = Knn_model.predict(x_input)[0]
 
-    # Display predicted class and associated image
+    # Display predicted class and associated image in the main section
     st.subheader(f"ผลทำนาย: {predicted_class}")
     if predicted_class == "Setosa":
         st.image("./pic/Irissetosa1.jpg", use_container_width=True)
