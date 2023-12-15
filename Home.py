@@ -1,85 +1,78 @@
 import streamlit as st
 import pandas as pd
-from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
 
-# Set page title and configure layout
-st.set_page_config(
-    page_title="การทดสอบเขียนเว็บด้วย Python",
-    page_icon=":tulip:",
-    layout="wide",
-)
-
-# Page title and header
 st.title('การทดสอบเขียนเว็บด้วย Python')
 st.header("Sumett Ampornsak")
 st.subheader('สาขาเทคโนโลยีสารสนเทศ')
 st.markdown("----")
 
-# Side-by-side image display
 col1, col2 = st.columns(2)
 with col1:
-    st.image('./pic/sumett_pic.jpg', use_container_width=True)
+    st.image('./pic/sumett_pic.jpg')
 with col2:
-    st.image('./pic/iris-flower-background.jpg', use_container_width=True)
+    st.image('./pic/iris-flower-background.jpg')
 
-# Statistics box on the left side
-st.markdown(
-    """
-    <div style="background-color:#85F733;padding:15px;border-radius:15px;border-style:solid;border-color:black">
-        <center><h5 style="color:white;">สถิติข้อมูลดอกไม้</h5></center>
-    </div>
-    """, unsafe_allow_html=True
-)
-
-# Display first 10 rows of the dataset
-dt = pd.read_csv('./data/iris.csv')
-st.dataframe(dt.head(10))
-
-# Summarize statistics
-dt_stats = dt.describe()
-st.write(dt_stats)
-
-# Bar chart display with checkbox
-show_chart = st.checkbox("Show bar chart")
-if show_chart:
-    st.bar_chart(dt_stats)
-
-# Prediction box on the right side
-st.markdown(
-    """
-    <div style="background-color:#FFBF00;padding:15px;border-radius:15px;border-style:solid;border-color:black">
-        <center><h5 style="color:white;">การทำนายคลาสดอกไม้</h5></center>
-    </div>
-    """, unsafe_allow_html=True
-)
+html_1 = """
+<div style="background-color:#85F733;padding:15px;border-radius:15px 15px 15px 15px;border-style:'solid';border-color:black">
+<center><h5>สถิติข้อมูลดอกไม้</h5></center>
+</div>
+"""
+st.markdown(html_1, unsafe_allow_html=True)
 st.markdown("")
 
-# User input for prediction on the right side
+dt = pd.read_csv('./data/iris.csv')
+st.write(dt.head(10))
+
+dt1 = dt['petal.length'].sum()
+dt2 = dt['petal.width'].sum()
+dt3 = dt['sepal.length'].sum()
+dt4 = dt['sepal.width'].sum()
+
+dx = [dt1, dt2, dt3, dt4]
+dx2 = pd.DataFrame(dx, index=["d1", "d2", "d3", "d4"])
+
+show_chart_button = st.button("Show/Hide Bar Chart")
+chart_container = st.empty()
+
+if show_chart_button:
+    chart_container.bar_chart(dx2)
+
+html_2 = """
+<div style="background-color:#FFBF00;padding:15px;border-radius:15px 15px 15px 15px;border-style:'solid';border-color:black">
+<center><h5>การทำนายคลาสดอกไม้</h5></center>
+</div>
+"""
+st.markdown(html_2, unsafe_allow_html=True)
+st.markdown("")
+
 ptlen = st.slider("กรุณาเลือกข้อมูล petal.length", 0, 10)
 ptwd = st.slider("กรุณาเลือกข้อมูล petal.width", 0, 10)
 splen = st.number_input("กรุณาเลือกข้อมูล sepal.length")
 spwd = st.number_input("กรุณาเลือกข้อมูล sepal.width")
 
-# KNN prediction button on the right side
 if st.button("ทำนายผล"):
-    X = dt.drop('variety', axis=1)
-    y = dt.variety
-    Knn_model = KNeighborsClassifier(n_neighbors=3)
-    Knn_model.fit(X, y)
+    if ptlen is not None and ptwd is not None and splen is not None and spwd is not None:
+        X = dt.drop('variety', axis=1)
+        y = dt.variety   
+        Knn_model = KNeighborsClassifier(n_neighbors=3)
+        Knn_model.fit(X, y)
+        
+        x_input = np.array([[ptlen, ptwd, splen, spwd]])
+        st.write(Knn_model.predict(x_input))
+        out = Knn_model.predict(x_input)
 
-    x_input = np.array([[ptlen, ptwd, splen, spwd]])
-    predicted_class = Knn_model.predict(x_input)[0]
-
-    # Display predicted class and associated image on the right side
-    st.subheader(f"ผลทำนาย: {predicted_class}")
-    if predicted_class == "Setosa":
-        st.image("./pic/Irissetosa1.jpg", use_container_width=True)
-    elif predicted_class == "Versicolor":
-        st.image("./pic/irisVersicolor.jpg", use_container_width=True)
+        if out[0] == "Setosa":
+            st.image("./pic/Irissetosa1.jpg")
+            st.header("Setosa")
+        elif out[0] == "Versicolor":
+            st.image("./pic/irisVersicolor.jpg")
+            st.header("Versicolor")
+        else:
+            st.image("./pic/Irisvirginica.jpg")  
+            st.header("Verginiga")
     else:
-        st.image("./pic/Irisvirginica.jpg", use_container_width=True)
-
-    st.button("ไม่ทำนายผล")
+        st.warning("กรุณากรอกข้อมูลที่เพียงพอสำหรับการทำนาย")
 else:
     st.button("ไม่ทำนายผล")
