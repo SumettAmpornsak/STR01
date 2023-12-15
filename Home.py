@@ -88,3 +88,4 @@ if st.button("ทำนายผล"):
    st.button("ไม่ทำนายผล")
 else :
     st.button("ไม่ทำนายผล")
+    
